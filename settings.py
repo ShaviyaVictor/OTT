@@ -14,6 +14,7 @@ import os
 
 from pathlib import Path
 from decouple import config
+from whitenoise import WhiteNoise
 
 # silence the whitenoise warning
 
@@ -29,11 +30,13 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 # Setting debug to False during development obscures the whitenoise from retrieving the static files
 DEBUG = True
+# True for Development && False for Production
 
 ALLOWED_HOSTS = ['outage-time-tracker.azurewebsites.net', 'localhost', '127.0.0.1']
 
 # Application definition
 
+# Where my list of apps are declared
 INSTALLED_APPS = [
     'counter.apps.CounterConfig',
     'authentication.apps.AuthenticationConfig',
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# Added the WhiteNoise line2 configuration together with the below STATICFILES_STORAGE configurations
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -58,7 +62,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'outageTT.urls'
 
-# Add trusted origin for csrf
+# Add trusted origin for csrf to allow our deployment custom url to perform CRUD operations
 CSRF_TRUSTED_ORIGINS = ['https://outage-time-tracker.azurewebsites.net','https://.127.0.0.1']
 
 TEMPLATES = [
@@ -77,11 +81,13 @@ TEMPLATES = [
     },
 ]
 
+# A configuration for psycopg2
 WSGI_APPLICATION = 'outageTT.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# This is the initial default working DB SQLite provided by Django
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -89,6 +95,7 @@ WSGI_APPLICATION = 'outageTT.wsgi.application'
 #     }
 # }
 
+# The configurations to the PostgreSQL DataBase configurations put in the .env file
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -123,6 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+# You can change the Timezone to your preffered Timezone
 TIME_ZONE = 'America/Jamaica'
 
 USE_I18N = True
@@ -139,8 +147,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = 'static/'
 
+# To allow WhiteNoise to access the Static files in the static folder
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# To let the Login approval to Redirect to the required page which in this case is the home page
 LOGIN_REDIRECT_URL = 'counter_home'
+
+# To change the Redirect from the 'account page' to our preferred 'login page' since by default when one clicks a link they are not authorised to visit, they are redirected to the accounts page so as to get their preffered page but this scraps that default
 LOGIN_URL = 'login'
