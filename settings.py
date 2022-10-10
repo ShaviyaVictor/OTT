@@ -32,6 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 # True for Development && False for Production
 
+# The url provided below MUST also be provided in the CSRF_TRUSTED_ORIGINS section but this time round with the https:// prefix
 ALLOWED_HOSTS = ['outage-time-tracker.azurewebsites.net', 'localhost', '127.0.0.1']
 
 # Application definition
